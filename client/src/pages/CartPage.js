@@ -45,6 +45,24 @@ const CartPage = () => {
     }
   };
 
+  // download item (still to be edited)
+  const downloadItem = async (id) => {
+    try {
+      const { data } = await axios.get(`/api/v1/product/download/${id}`);
+      const blob = new Blob([data], { type: 'application/octet-stream' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `item_${id}.pdf`; // Change the file extension as needed
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //get payment gateway token
   const getToken = async () => {
     try {
@@ -123,6 +141,15 @@ const CartPage = () => {
                       Remove
                     </button>
                   </div>
+                  {/* New Code to add Button */}
+                  {/* <div className="col-md-4 cart-download-btn">
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => downloadItem(p._id)}
+                    >
+                      Download
+                    </button>
+                  </div> */}
                 </div>
               ))}
             </div>

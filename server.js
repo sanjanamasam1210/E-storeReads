@@ -17,7 +17,7 @@ connectDB();
 //rest object
 const app = express();
 
-//middelwares
+//middlewares
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -29,7 +29,7 @@ app.use("/api/v1/product", productRoutes);
 
 //rest api
 app.get("/", (req, res) => {
-  res.send("<h1>Welcome to PrimeCart</h1>");
+  res.send("<h1>Welcome to E-StoreReads</h1>");
 });
 
 //PORT

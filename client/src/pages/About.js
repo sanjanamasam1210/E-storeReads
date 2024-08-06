@@ -3,7 +3,7 @@ import Layout from "./../components/Layout/Layout";
 
 const About = () => {
   return (
-    <Layout title={"About us - PrimeCart"}>
+    <Layout title={"About us - E-StoreReads"}>
       <div className="row contactus ">
         <div className="col-md-6 ">
           <img
@@ -14,18 +14,11 @@ const About = () => {
         </div>
         <div className="col-md-4">
           <p className="text-justify mt-2">
-            Our E-commerce website represents a pinnacle of modern design,
-            boasting a minimalistic and clean aesthetic that enhances user
-            experience. Specializing exclusively in electronic products, our
-            platform serves as a hub where sellers can effortlessly create
-            accounts and showcase their merchandise, while buyers enjoy a
-            seamless shopping experience.
+          The Digital Bookstore is a comprehensive online platform designed to meet the needs of book enthusiasts. Our bookstore offers a vast collection of books across various genres, catering to both physical delivery and digital eBook formats. Users can seamlessly browse through categories, utilize advanced filters to find their desired books, and enjoy a streamlined shopping experience. The platform is equipped with a secure payment gateway that ensures safe and reliable transactions, providing users with the convenience of having books delivered to their doorstep or instantly downloading eBooks.
+
             <p className="text-justify mt-2">
-              Equipped with essential features such as a shopping cart, dynamic
-              price filters, and an array of functionalities, our website is
-              meticulously crafted to cater to the diverse needs of both sellers
-              and buyers, ensuring a streamlined and convenient online
-              marketplace for electronic enthusiasts.
+              
+In addition to its user-friendly interface, the Digital Bookstore includes features like order tracking, a customer dashboard for managing purchases, and an admin dashboard for managing inventory and orders.  Whether you're a casual reader or a bibliophile, the Digital Bookstore aims to offer a seamless and enjoyable shopping experience.
             </p>
           </p>
         </div>

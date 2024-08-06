@@ -27,6 +27,22 @@ const AdminOrders = () => {
       console.log(error);
     }
   };
+  const downloadItem = async (id) => {
+    try {
+      const { data } = await axios.get(`/api/v1/product/download/${id}`);
+      const blob = new Blob([data], { type: "application/octet-stream" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `item_${id}.pdf`; // Change the file extension as needed
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (auth?.token) getOrders();
@@ -103,6 +119,14 @@ const AdminOrders = () => {
                         <p>{p.name}</p>
                         <p>{p.description.substring(0, 30)}</p>
                         <p>Price : {p.price}</p>
+                      </div>
+                      <div className="col-md-4">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => downloadItem(p._id)}
+                        >
+                          Download
+                        </button>
                       </div>
                     </div>
                   ))}
