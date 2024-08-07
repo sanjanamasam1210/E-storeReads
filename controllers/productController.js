@@ -21,8 +21,8 @@ export const createProductController = async (req, res) => {
   try {
     const { name, description, price, category, quantity, shipping } =
       req.fields;
-    const { photo } = req.files;
-    //alidation
+    const { photo, pdf } = req.files;
+    //Validation
     switch (true) {
       case !name:
         return res.status(500).send({ error: "Name is Required" });
@@ -38,12 +38,18 @@ export const createProductController = async (req, res) => {
         return res
           .status(500)
           .send({ error: "photo is Required and should be less then 1mb" });
+      case pdf && pdf.size > 5000000: // Add validation for PDF size
+        return res.status(500).send({ error: "PDF should be less than 5MB" });
     }
 
     const products = new productModel({ ...req.fields, slug: slugify(name) });
     if (photo) {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
+    }
+    if (pdf) {
+      products.pdf.data = fs.readFileSync(pdf.path); // Save PDF data
+      products.pdf.contentType = pdf.type; // Save PDF content type
     }
     await products.save();
     res.status(201).send({
@@ -56,7 +62,7 @@ export const createProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error in crearing product",
+      message: "Error in creating product",
     });
   }
 };
@@ -67,20 +73,20 @@ export const getProductController = async (req, res) => {
     const products = await productModel
       .find({})
       .populate("category")
-      .select("-photo")
+      .select("-photo -pdf")
       .limit(12)
       .sort({ createdAt: -1 });
     res.status(200).send({
       success: true,
       counTotal: products.length,
-      message: "ALlProducts ",
+      message: "All Products ",
       products,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Erorr in getting products",
+      message: "Error in getting products",
       error: error.message,
     });
   }
@@ -101,7 +107,7 @@ export const getSingleProductController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Eror while getitng single product",
+      message: "Error while getting single product",
       error,
     });
   }
@@ -143,7 +149,7 @@ export const deleteProductController = async (req, res) => {
   }
 };
 
-//upate producta
+//update products
 export const updateProductController = async (req, res) => {
   try {
     const { name, description, price, category, quantity, shipping } =
@@ -306,7 +312,7 @@ export const realtedProductController = async (req, res) => {
   }
 };
 
-// get prdocyst by catgory
+// get product by category
 export const productCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });

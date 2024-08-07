@@ -25,7 +25,7 @@ const Layout = ({ children, title, description, keywords, author }) => {
 };
 
 Layout.defaultProps = {
-  title: "PrimeCart",
+  title: "E-StoreReads",
   description: "mern stack project",
   keywords: "mern,react,node,mongodb",
   author: "SM",

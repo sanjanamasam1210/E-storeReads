@@ -17,6 +17,7 @@ const CreateProduct = () => {
   const [quantity, setQuantity] = useState("");
   const [shipping, setShipping] = useState("");
   const [photo, setPhoto] = useState("");
+  const [pdf, setPdf] = useState(""); // Edited
 
   //get all category
   const getAllCategory = async () => {
@@ -27,7 +28,7 @@ const CreateProduct = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something wwent wrong in getting catgeory");
+      toast.error("Something went wrong in getting category");
     }
   };
 
@@ -44,8 +45,18 @@ const CreateProduct = () => {
       productData.append("description", description);
       productData.append("price", price);
       productData.append("quantity", quantity);
-      productData.append("photo", photo);
+      // productData.append("photo", photo);
       productData.append("category", category);
+      // productData.append("pdf", pdf);
+      // Edited and it workss yyayyayya
+      if (photo) {
+        productData.append("photo", photo);
+      }
+      productData.append("category", category);
+      if (pdf) {
+        productData.append("pdf", pdf);
+      }
+      //
       const { data } = axios.post(
         "/api/v1/product/create-product",
         productData
@@ -149,6 +160,21 @@ const CreateProduct = () => {
                   onChange={(e) => setQuantity(e.target.value)}
                 />
               </div>
+
+              {/* New Section for uploading files while creating a product (completed*/}
+              <div className="mb-3">
+                <label className="btn btn-outline-secondary col-md-12">
+                  {pdf ? pdf.name : "Upload PDF"}
+                  <input
+                    type="file"
+                    name="file"
+                    accept="application/pdf"
+                    onChange={(e) => setPdf(e.target.files[0])}
+                    hidden
+                  />
+                </label>
+              </div>
+
               <div className="mb-3">
                 <Select
                   bordered={false}

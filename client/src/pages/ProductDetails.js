@@ -9,8 +9,10 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [pdf, setPdf] = useState(null); // New state for PDF
 
-  //initalp details
+
+  //inital details
   useEffect(() => {
     if (params?.slug) getProduct();
   }, [params?.slug]);
@@ -21,6 +23,7 @@ const ProductDetails = () => {
         `/api/v1/product/get-product/${params.slug}`
       );
       setProduct(data?.product);
+      setPdf(data?.product?.pdf); // Set PDF if available
       getSimilarProduct(data?.product._id, data?.product.category._id);
     } catch (error) {
       console.log(error);
@@ -62,6 +65,12 @@ const ProductDetails = () => {
             })}
           </h6>
           <h6>Category : {product?.category?.name}</h6>
+          {/* new code for PDF */}
+          {pdf && (
+        <a href={`/api/v1/product/download-pdf/${product._id}`} download>
+          <button className="btn btn-primary">Download PDF</button>
+        </a>
+      )}
           <button class="btn btn-secondary ms-1">ADD TO CART</button>
         </div>
       </div>

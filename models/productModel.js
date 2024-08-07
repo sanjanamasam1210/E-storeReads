@@ -34,6 +34,10 @@ const productSchema = new mongoose.Schema(
     shipping: {
       type: Boolean,
     },
+    pdf: {
+      data: Buffer,
+      contentType: String,
+    },
   },
   { timestamps: true }
 );
