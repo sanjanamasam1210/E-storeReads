@@ -36,13 +36,13 @@ const Header = () => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-            <Link to="/" className="navbar-brand">
+            <Link to="/" className="navbar-brand" style={{ color: "#F9F7F7" }}>
               🛒 E-StoreReads
             </Link>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <SearchInput />
               <li className="nav-item">
-                <NavLink to="/" className="nav-link ">
+                <NavLink to="/" className="nav-link " style={{ color: "#F9F7F7" }}>
                   Home
                 </NavLink>
               </li>
@@ -50,13 +50,13 @@ const Header = () => {
                 <Link
                   className="nav-link dropdown-toggle"
                   to={"/categories"}
-                  data-bs-toggle="dropdown"
+                  data-bs-toggle="dropdown" style={{ color: "#F9F7F7" }}
                 >
                   Categories
                 </Link>
                 <ul className="dropdown-menu">
                   <li>
-                    <Link className="dropdown-item" to={"/categories"}>
+                    <Link className="dropdown-item" to={"/categories"} style={{ color: "#F9F7F7" , backgroundColor:"#3F72AF"}}>
                       All Categories
                     </Link>
                   </li>
@@ -64,7 +64,7 @@ const Header = () => {
                     <li>
                       <Link
                         className="dropdown-item"
-                        to={`/category/${c.slug}`}
+                        to={`/category/${c.slug}`} style={{ color: "#F9F7F7" , backgroundColor:"#3F72AF"}}
                       >
                         {c.name}
                       </Link>
@@ -76,12 +76,12 @@ const Header = () => {
               {!auth?.user ? (
                 <>
                   <li className="nav-item">
-                    <NavLink to="/register" className="nav-link">
+                    <NavLink to="/register" className="nav-link" style={{ color: "#F9F7F7" }}>
                       Register
                     </NavLink>
                   </li>
                   <li className="nav-item">
-                    <NavLink to="/login" className="nav-link">
+                    <NavLink to="/login" className="nav-link" style={{ color: "#F9F7F7" }}>
                       Login
                     </NavLink>
                   </li>
@@ -94,7 +94,7 @@ const Header = () => {
                       href="#"
                       role="button"
                       data-bs-toggle="dropdown"
-                      style={{ border: "none" }}
+                      style={{ border: "none" , color:"#F9F7F7"}}
                     >
                       {auth?.user?.name}
                     </NavLink>
@@ -104,7 +104,7 @@ const Header = () => {
                           to={`/dashboard/${
                             auth?.user?.role === 1 ? "admin" : "user"
                           }`}
-                          className="dropdown-item"
+                          className="dropdown-item" style={{ color: "#F9F7F7" , backgroundColor:"#3F72AF"}}
                         >
                           Dashboard
                         </NavLink>
@@ -113,7 +113,7 @@ const Header = () => {
                         <NavLink
                           onClick={handleLogout}
                           to="/login"
-                          className="dropdown-item"
+                          className="dropdown-item" style={{ color: "#F9F7F7" , backgroundColor:"#3F72AF"}}
                         >
                           Logout
                         </NavLink>
@@ -123,7 +123,7 @@ const Header = () => {
                 </>
               )}
               <li className="nav-item">
-                <NavLink to="/cart" className="nav-link">
+                <NavLink to="/cart" className="nav-link" style={{ color: "#F9F7F7" }}>
                   <Badge count={cart?.length} showZero offset={[10, -5]}>
                     Cart
                   </Badge>

@@ -143,7 +143,7 @@ const HomePage = () => {
           <div className="d-flex flex-column">
             <button
               className="btn btn-danger"
-              onClick={() => window.location.reload()}
+              onClick={() => window.location.reload()} style={{backgroundColor:"#112D4E"}}
             >
               RESET FILTERS
             </button>
@@ -174,13 +174,13 @@ const HomePage = () => {
                   </p>
                   <div className="card-name-price">
                     <button
-                      className="btn btn-info ms-1"
+                      className="btn ms-1 custombtnbtn"
                       onClick={() => navigate(`/product/${p.slug}`)}
                     >
                       More Details
                     </button>
                     <button
-                      className="btn btn-dark ms-1"
+                      className="btn ms-1 custombtnbtn"
                       onClick={() => {
                         setCart([...cart, p]);
                         localStorage.setItem(

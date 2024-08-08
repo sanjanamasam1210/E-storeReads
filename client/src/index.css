@@ -54,6 +54,32 @@ body{
   color: white;
 }
 
+.custombtnbtn{
+  color:#F9F7F7;
+  border: none;
+  background-color: #3F72AF;
+}
+
+.custombtnbtn:hover{
+  background-color :#112D4E !important;
+  color:#F9F7F7;
+}
+
+.custombtnbtn:active{
+  background-color :#112D4E !important; 
+  color:#F9F7F7 !important;
+}
+.custom-btn {
+  color: #F9F7F7;
+  background-color: #112D4E !important;
+}
+
+.custom-btn:hover {
+  background-color: #F9F7F7 !important;
+  color: #112D4E; /* Or red if you prefer */
+}
+
+
 /* =============================
 ==========footer============= */
 
