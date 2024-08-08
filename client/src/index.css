@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 body{
-  background-color: #F0DBDB;
+  background-color: #F9F7F7;
 
 }
 
@@ -22,7 +22,7 @@ body{
   box-shadow: 0 8px 6px -6px gray;
   /* --webkit-box-shadow: 0 8px 6px -6px gray; */
   /* border-bottom: solid gray !important; */
-  background-color: #DBA39A !important;
+  background-color: #3F72AF !important;
   /* padding:0; */
 }
 
@@ -60,7 +60,7 @@ body{
 .footer {
   color: rgb(255, 255, 255);
   padding: 25px;
-  background: #DBA39A; /* fallback for old browsers */
+  background: #3F72AF; /* fallback for old browsers */
   /* background: -webkit-linear-gradient(
     to right,
     #434343,
@@ -79,7 +79,7 @@ body{
 }
 
 .footer a:hover {
-  color:#C4DFDF;
+  color:#DBE2EF;
   border-bottom: 1px solid #ffefba;
 }
 /* =================================
@@ -121,6 +121,7 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
+  /* background-color: #112D4E !important; */
   /* margin-top: 50px; */
 }
 

@@ -19,10 +19,10 @@ var gateway = new braintree.BraintreeGateway({
 
 export const createProductController = async (req, res) => {
   try {
-    const { name, description, price, category, quantity, shipping } =
-      req.fields;
+    const { name, description, price, category, quantity, shipping } = req.fields;
     const { photo, pdf } = req.files;
-    //Validation
+
+    // Validation
     switch (true) {
       case !name:
         return res.status(500).send({ error: "Name is Required" });
@@ -35,27 +35,25 @@ export const createProductController = async (req, res) => {
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
       case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
-      case pdf && pdf.size > 5000000: // Add validation for PDF size
+        return res.status(500).send({ error: "Photo should be less than 1MB" });
+      case pdf && pdf.size > 5000000: // Adjust size validation for PDF
         return res.status(500).send({ error: "PDF should be less than 5MB" });
     }
 
-    const products = new productModel({ ...req.fields, slug: slugify(name) });
+    const product = new productModel({ ...req.fields, slug: slugify(name) });
     if (photo) {
-      products.photo.data = fs.readFileSync(photo.path);
-      products.photo.contentType = photo.type;
+      product.photo.data = fs.readFileSync(photo.path);
+      product.photo.contentType = photo.type;
     }
     if (pdf) {
-      products.pdf.data = fs.readFileSync(pdf.path); // Save PDF data
-      products.pdf.contentType = pdf.type; // Save PDF content type
+      product.pdf.data = fs.readFileSync(pdf.path); // Save PDF data
+      product.pdf.contentType = pdf.type; // Save PDF content type
     }
-    await products.save();
+    await product.save();
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
-      products,
+      product,
     });
   } catch (error) {
     console.log(error);
@@ -96,7 +94,7 @@ export const getSingleProductController = async (req, res) => {
   try {
     const product = await productModel
       .findOne({ slug: req.params.slug })
-      .select("-photo")
+      .select("-photo -pdf")
       .populate("category");
     res.status(200).send({
       success: true,
@@ -128,6 +126,42 @@ export const productPhotoController = async (req, res) => {
       message: "Erorr while getting photo",
       error,
     });
+  }
+};
+
+// get pdf
+// export const productPdfController = async (req, res) => {
+//   try {
+//     console.log("Fetching PDF for product ID:", req.params.pid);
+//     const product = await productModel.findById(req.params.pid).select("pdf");
+//     if (product && product.pdf.data) {
+//       console.log("PDF found for product ID:", req.params.pid);
+//       res.set("Content-type", product.pdf.contentType);
+//       return res.status(200).send(product.pdf.data);
+//     } else {
+//       console.log("PDF not found for product ID:", req.params.pid);
+//       res.status(404).send({ message: "PDF not found" });
+//     }
+//   } catch (error) {
+//     console.log("Error fetching PDF:", error);
+//     res.status(500).send({
+//       success: false,
+//       message: "Error while getting PDF",
+//       error,
+//     });
+//   }
+// };
+
+export const productPdfController = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.pid).select("pdf");
+    if (!product || !product.pdf || !product.pdf.data) {
+      return res.status(404).send("PDF not found");
+    }
+    res.set("Content-Type", product.pdf.contentType);
+    res.send(product.pdf.data);
+  } catch (error) {
+    res.status(500).send("Error fetching PDF");
   }
 };
 
@@ -193,7 +227,7 @@ export const updateProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error in Updte product",
+      message: "Error in Update product",
     });
   }
 };
@@ -353,10 +387,11 @@ export const brainTreePaymentController = async (req, res) => {
   try {
     const { nonce, cart } = req.body;
     let total = 0;
-    cart.map((i) => {
-      total += i.price;
+    cart.forEach((item) => {
+      total += item.price;
     });
-    let newTransaction = gateway.transaction.sale(
+
+    gateway.transaction.sale(
       {
         amount: total,
         paymentMethodNonce: nonce,
@@ -364,14 +399,28 @@ export const brainTreePaymentController = async (req, res) => {
           submitForSettlement: true,
         },
       },
-      function (error, result) {
+      async (error, result) => {
         if (result) {
-          const order = new orderModel({
+          const order = await new orderModel({
             products: cart,
             payment: result,
             buyer: req.user._id,
           }).save();
-          res.json({ ok: true });
+
+          // Check for PDFs in the ordered products
+          const orderedProducts = await productModel.find({
+            _id: { $in: cart.map(item => item._id) }
+          }).select("pdf");
+
+          // Create an array of download links for PDFs
+          const pdfLinks = orderedProducts.map(product => {
+            if (product.pdf.data) {
+              return `/api/product-pdf/${product._id}`;
+            }
+            return null;
+          }).filter(link => link !== null);
+
+          res.json({ ok: true, pdfLinks });
         } else {
           res.status(500).send(error);
         }
@@ -379,5 +428,11 @@ export const brainTreePaymentController = async (req, res) => {
     );
   } catch (error) {
     console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error processing payment",
+      error,
+    });
   }
 };
+
