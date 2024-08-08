@@ -11,16 +11,18 @@ import {
   productFiltersController,
   productListController,
   productPhotoController,
+  productPdfController,
   realtedProductController,
   searchProductController,
   updateProductController,
 } from "../controllers/productController.js";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 import formidable from "express-formidable";
+import { generatePDF } from '../controllers/generatePdf.js'; // Correct import
 
 const router = express.Router();
 
-//routes
+// Product routes
 router.post(
   "/create-product",
   requireSignIn,
@@ -28,7 +30,6 @@ router.post(
   formidable(),
   createProductController
 );
-//routes
 router.put(
   "/update-product/:pid",
   requireSignIn,
@@ -36,42 +37,31 @@ router.put(
   formidable(),
   updateProductController
 );
-
-//get products
 router.get("/get-product", getProductController);
-
-//single product
 router.get("/get-product/:slug", getSingleProductController);
-
-//get photo
 router.get("/product-photo/:pid", productPhotoController);
-
-//delete rproduct
+router.get("/product-pdf/:pid", productPdfController); // Ensure this route is correct
 router.delete("/delete-product/:pid", deleteProductController);
-
-//filter product
 router.post("/product-filters", productFiltersController);
-
-//product count
 router.get("/product-count", productCountController);
-
-//product per page
 router.get("/product-list/:page", productListController);
-
-//search product
 router.get("/search/:keyword", searchProductController);
-
-//similar product
 router.get("/related-product/:pid/:cid", realtedProductController);
-
-//category wise product
 router.get("/product-category/:slug", productCategoryController);
 
-//payments routes
-//token
-router.get("/braintree/token", braintreeTokenController);
+// New route for generating PDF
+router.get("/generate-pdf/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    await generatePDF(orderId);
+    res.status(200).send("PDF generated successfully");
+  } catch (error) {
+    res.status(500).send("Error generating PDF");
+  }
+});
 
-//payments
+// Payment routes
+router.get("/braintree/token", braintreeTokenController);
 router.post("/braintree/payment", requireSignIn, brainTreePaymentController);
 
 export default router;

@@ -13,7 +13,9 @@ const Contact = () => {
           />
         </div>
         <div className="col-md-4">
-          <h1 className="bg-dark p-2 text-white text-center">CONTACT US</h1>
+        <h1 className="p-2 text-white text-center" style={{ backgroundColor: '#112D4E' }}>
+    CONTACT US
+  </h1>
           <p className="text-justify mt-2">
           Reach out to us anytime. We're here to assist you with any inquiries, concerns, or feedback you may have.
           </p>

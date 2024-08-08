@@ -16,6 +16,7 @@ const AdminOrders = () => {
     "deliverd",
     "cancel",
   ]);
+  const [selectedPdf, setSelectedPdf] = useState(null);
   const [changeStatus, setCHangeStatus] = useState("");
   const [orders, setOrders] = useState([]);
   const [auth, setAuth] = useAuth();
@@ -23,22 +24,6 @@ const AdminOrders = () => {
     try {
       const { data } = await axios.get("/api/v1/auth/all-orders");
       setOrders(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const downloadItem = async (id) => {
-    try {
-      const { data } = await axios.get(`/api/v1/product/download/${id}`);
-      const blob = new Blob([data], { type: "application/octet-stream" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `item_${id}.pdf`; // Change the file extension as needed
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.log(error);
     }
@@ -58,6 +43,11 @@ const AdminOrders = () => {
       console.log(error);
     }
   };
+
+  const handleViewPdf = (productId) => {
+    setSelectedPdf(`/api/v1/product/product-pdf/${productId}`); // Set the PDF URL
+  };
+
   return (
     <Layout title={"All Orders Data"}>
       <div className="row dashboard">
@@ -120,15 +110,17 @@ const AdminOrders = () => {
                         <p>{p.description.substring(0, 30)}</p>
                         <p>Price : {p.price}</p>
                       </div>
-                      <div className="col-md-4">
+                      
+                      <div className="col-md-8">
                         <button
                           className="btn btn-primary"
-                          onClick={() => downloadItem(p._id)}
+                          onClick={() => handleViewPdf(p._id)}
                         >
-                          Download
+                          View PDF
                         </button>
                       </div>
-                    </div>
+                      </div>
+                   
                   ))}
                 </div>
               </div>

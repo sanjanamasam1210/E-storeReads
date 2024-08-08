@@ -20,22 +20,22 @@ const Orders = () => {
     }
   };
 
-  const downloadItem = async (id) => {
-    try {
-      const { data } = await axios.get(`/api/v1/product/download/${id}`);
-      const blob = new Blob([data], { type: "application/octet-stream" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `item_${id}.pdf`; // Change the file extension as needed
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const downloadItem = async (id) => {
+  //   try {
+  //     const { data } = await axios.get(`/api/v1/product/download/${id}`);
+  //     const blob = new Blob([data], { type: "application/octet-stream" });
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `item_${id}.pdf`; // Change the file extension as needed
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     a.remove();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   // const downloadItem = async (productId) => {
   //   try {
@@ -55,6 +55,23 @@ const Orders = () => {
   //   }
   // };
 
+  const downloadItem = async (productId) => {
+    try {
+      const response = await axios.get(`/api/v1/product/product-pdf/${productId}`, {
+        responseType: 'blob', // Important for handling binary data
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `product_${productId}.pdf`); // Set the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url); // Clean up the URL object
+    } catch (error) {
+      console.error("Error downloading the PDF file", error);
+    }
+  };
   
   useEffect(() => {
     if (auth?.token) getOrders();
