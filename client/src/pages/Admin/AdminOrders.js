@@ -13,13 +13,13 @@ const AdminOrders = () => {
     "Not Process",
     "Processing",
     "Shipped",
-    "deliverd",
-    "cancel",
+    "Delivered",
+    "Cancel",
   ]);
-  const [selectedPdf, setSelectedPdf] = useState(null);
-  const [changeStatus, setCHangeStatus] = useState("");
+
   const [orders, setOrders] = useState([]);
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth(); // No need to destructure setAuth if not used
+
   const getOrders = async () => {
     try {
       const { data } = await axios.get("/api/v1/auth/all-orders");
@@ -35,7 +35,7 @@ const AdminOrders = () => {
 
   const handleChange = async (orderId, value) => {
     try {
-      const { data } = await axios.put(`/api/v1/auth/order-status/${orderId}`, {
+      await axios.put(`/api/v1/auth/order-status/${orderId}`, {
         status: value,
       });
       getOrders();
@@ -45,7 +45,21 @@ const AdminOrders = () => {
   };
 
   const handleViewPdf = (productId) => {
-    setSelectedPdf(`/api/v1/product/product-pdf/${productId}`); // Set the PDF URL
+    const fetchPdf = async () => {
+      try {
+        const response = await axios.get(`/api/v1/product/product-pdf/${productId}`, {
+          responseType: "blob", // important to get the file as a blob
+        });
+        const url = URL.createObjectURL(response.data);
+        window.open(url, "_blank"); // Open the PDF in a new tab
+      } catch (error) {
+        console.error("Error fetching PDF", error);
+      }
+    };
+
+    if (productId) {
+      fetchPdf();
+    }
   };
 
   return (
@@ -58,14 +72,14 @@ const AdminOrders = () => {
           <h1 className="text-center">All Orders</h1>
           {orders?.map((o, i) => {
             return (
-              <div className="border shadow">
+              <div className="border shadow" key={o._id}>
                 <table className="table">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">Status</th>
                       <th scope="col">Buyer</th>
-                      <th scope="col"> date</th>
+                      <th scope="col">Date</th>
                       <th scope="col">Payment</th>
                       <th scope="col">Quantity</th>
                     </tr>
@@ -109,18 +123,14 @@ const AdminOrders = () => {
                         <p>{p.name}</p>
                         <p>{p.description.substring(0, 30)}</p>
                         <p>Price : {p.price}</p>
-                      </div>
-                      
-                      <div className="col-md-8">
                         <button
-                          className="btn btn-primary"
                           onClick={() => handleViewPdf(p._id)}
+                          className="btn btn-primary"
                         >
                           View PDF
                         </button>
                       </div>
-                      </div>
-                   
+                    </div>
                   ))}
                 </div>
               </div>

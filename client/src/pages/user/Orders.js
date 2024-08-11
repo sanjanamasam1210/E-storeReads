@@ -20,58 +20,23 @@ const Orders = () => {
     }
   };
 
-  // const downloadItem = async (id) => {
-  //   try {
-  //     const { data } = await axios.get(`/api/v1/product/download/${id}`);
-  //     const blob = new Blob([data], { type: "application/octet-stream" });
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = `item_${id}.pdf`; // Change the file extension as needed
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     a.remove();
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const downloadItem = async (productId) => {
-  //   try {
-  //     const response = await axios.get(`/api/v1/product/download-pdf/${productId}`, {
-  //       responseType: 'blob', // Important for handling binary data
-  //     });
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.setAttribute('download', `product_${productId}.pdf`); // Set the file name
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     link.remove();
-  //     window.URL.revokeObjectURL(url); // Clean up the URL object
-  //   } catch (error) {
-  //     console.error("Error downloading the PDF file", error);
-  //   }
-  // };
-
-  const downloadItem = async (productId) => {
-    try {
-      const response = await axios.get(`/api/v1/product/product-pdf/${productId}`, {
-        responseType: 'blob', // Important for handling binary data
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `product_${productId}.pdf`); // Set the file name
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url); // Clean up the URL object
-    } catch (error) {
-      console.error("Error downloading the PDF file", error);
+  const handleViewPdf = (productId) => {
+    const fetchPdf = async () => {
+      try {
+        const response = await axios.get(`/api/v1/product/product-pdf/${productId}`, {
+          responseType: "blob", // important to get the file as a blob
+        });
+        const url = URL.createObjectURL(response.data);
+        window.open(url, "_blank"); // Open the PDF in a new tab
+      } catch (error) {
+        console.error("Error fetching PDF", error);
+      }
+    };
+    if (productId) {
+      fetchPdf();
     }
   };
+  
   
   useEffect(() => {
     if (auth?.token) getOrders();
@@ -129,10 +94,10 @@ const Orders = () => {
                       </div>
                       <div className="col-md-4">
                         <button
+                          onClick={() => handleViewPdf(p._id)}
                           className="btn btn-primary"
-                          onClick={() => downloadItem(p._id)}
                         >
-                          Download
+                          View PDF
                         </button>
                       </div>
                     </div>

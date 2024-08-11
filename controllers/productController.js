@@ -129,6 +129,28 @@ export const productPhotoController = async (req, res) => {
   }
 };
 
+export const productPdfController = async (req, res) => {
+  try {
+    console.log("Fetching PDF for product ID:", req.params.pid);
+    const product = await productModel.findById(req.params.pid).select("pdf");
+    if (product && product.pdf.data) {
+      console.log("PDF found for product ID:", req.params.pid);
+      res.set("Content-type", product.pdf.contentType);
+      return res.status(200).send(product.pdf.data);
+    } else {
+      console.log("PDF not found for product ID:", req.params.pid);
+      res.status(404).send({ message: "PDF not found" });
+    }
+  } catch (error) {
+    console.log("Error fetching PDF:", error);
+    res.status(500).send({
+      success: false,
+      message: "Error while getting PDF",
+      error,
+    });
+  }
+};
+
 // get pdf
 // export const productPdfController = async (req, res) => {
 //   try {
@@ -152,18 +174,7 @@ export const productPhotoController = async (req, res) => {
 //   }
 // };
 
-export const productPdfController = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.pid).select("pdf");
-    if (!product || !product.pdf || !product.pdf.data) {
-      return res.status(404).send("PDF not found");
-    }
-    res.set("Content-Type", product.pdf.contentType);
-    res.send(product.pdf.data);
-  } catch (error) {
-    res.status(500).send("Error fetching PDF");
-  }
-};
+
 
 //delete controller
 export const deleteProductController = async (req, res) => {
